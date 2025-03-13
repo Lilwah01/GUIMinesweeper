@@ -542,28 +542,28 @@ public class Minesweeper implements MouseListener, ActionListener{
 			tileValue-=48;
 			
 			//check all surrounding tiles for flags
-			if(column != Board.getSize()-1 && displayBoard.getTileValue(column+1,row) != 'F') {
+			if(column != Board.getSize()-1 && displayBoard.getTileValue(column+1,row) == 'F') {
 				surroundFlags++;
 			}
-			if(column != 0 && displayBoard.getTileValue(column-1,row) != 'F') {
+			if(column != 0 && displayBoard.getTileValue(column-1,row) == 'F') {
 				surroundFlags++;;
 			}
-			if(row != Board.getSize()-1 && displayBoard.getTileValue(column,row+1) != 'F') {
+			if(row != Board.getSize()-1 && displayBoard.getTileValue(column,row+1) == 'F') {
 				surroundFlags++;;
 			}
-			if(row != 0 && displayBoard.getTileValue(column,row-1) != 'F') {
+			if(row != 0 && displayBoard.getTileValue(column,row-1) == 'F') {
 				surroundFlags++;;
 			}
-			if(column != Board.getSize()-1 && row != 0 && displayBoard.getTileValue(column+1,row-1) != 'F') {
+			if(column != Board.getSize()-1 && row != 0 && displayBoard.getTileValue(column+1,row-1) == 'F') {
 				surroundFlags++;;
 			}
-			if(column != Board.getSize()-1 && row != Board.getSize()-1 && displayBoard.getTileValue(column+1,row+1) != 'F') {
+			if(column != Board.getSize()-1 && row != Board.getSize()-1 && displayBoard.getTileValue(column+1,row+1) == 'F') {
 				surroundFlags++;;
 			}
-			if(column != 0 && row != Board.getSize()-1 && displayBoard.getTileValue(column-1,row+1) != 'F') {
+			if(column != 0 && row != Board.getSize()-1 && displayBoard.getTileValue(column-1,row+1) == 'F') {
 				surroundFlags++;;
 			}
-			if(column !=0 && row !=0 && displayBoard.getTileValue(column-1,row-1) != 'F') {
+			if(column !=0 && row !=0 && displayBoard.getTileValue(column-1,row-1) == 'F') {
 				surroundFlags++;;
 			}
 			
