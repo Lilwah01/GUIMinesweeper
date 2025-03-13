@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -25,7 +29,7 @@ public class Minesweeper implements MouseListener, ActionListener{
 	
 	//One frame that allows to change whats on screen
 	private JFrame frame;
-	//field buttons
+	//field buttonss
 	private JButton buttons[][];
 	//buttons for prompting new game or shutdown
 	private JButton startOver;
@@ -52,11 +56,33 @@ public class Minesweeper implements MouseListener, ActionListener{
 	//get user numBombs input
 	private JTextField bombInput;
 	private JButton bombButton;
+	//inti sound vars
+	private Clip winSound;
+	private Clip loseSound;
+	private Clip revealSound;
 
-	Minesweeper() {
-		//start the game loop
+	Minesweeper() throws IOException, UnsupportedAudioFileException, LineUnavailableException{
+		//load sounds
+		File gameWinFile = new File("win.wav");
+		AudioInputStream winStream = AudioSystem.getAudioInputStream(gameWinFile);
+		winSound = AudioSystem.getClip();
+		winSound.open(winStream);
+		
+		File gameLoseFile = new File("lose.wav");
+		AudioInputStream loseStream = AudioSystem.getAudioInputStream(gameLoseFile);
+		loseSound = AudioSystem.getClip();
+		loseSound.open(loseStream);
+		
+		File revealFile = new File("tick.wav");
+		AudioInputStream revealStream = AudioSystem.getAudioInputStream(revealFile);
+		revealSound = AudioSystem.getClip();
+		revealSound.open(revealStream);
+		//set revealSound louder
+		FloatControl revealVolume = (FloatControl) revealSound.getControl(FloatControl.Type.MASTER_GAIN);
+		revealVolume.setValue(6.0f);
+		
+		//game loop
 		askSize();
-
 	}
 	
 	//creates a JFrame that contains the play field
@@ -135,9 +161,11 @@ public class Minesweeper implements MouseListener, ActionListener{
 	//creates a JFrame that asks user for board size
 	public void askSize() {
 		
-		//if frame exists, get rid of it and create new onw
+		//if frame exists, get rid of it and create new one and reset sound
 		if(frame != null) {
 			frame.dispose();
+			winSound.setFramePosition(0);
+			loseSound.setFramePosition(0);
 		}
 		frame  = new JFrame("MineSweeper");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -257,6 +285,10 @@ public class Minesweeper implements MouseListener, ActionListener{
 	
 	//reveal selected tiles, set displayValue to actualValue
 	private void reveal(int column, int row) {
+		
+		//reset revealSound
+		revealSound.setFramePosition(0);
+		
 		//if tile is not flagged
 		if(displayBoard.getTileValue(column, row) != 'F') {
 			//check if tile is a bomb
@@ -275,18 +307,23 @@ public class Minesweeper implements MouseListener, ActionListener{
 				JLabel label = new JLabel("You clicked a bomb, gameover. ");
 				top.add(label);
 				
+				//play loseSound
+				loseSound.start();
+				
 				//prompt to play again
 				playAgain();
 			}
 			else {
 				//else reveal tile by setting its value to corresponding value in actualboard
 				displayBoard.setTileValue(column, row, actualBoard.getTileValue(column, row));
+				//play revealsound
+				revealSound.start();
 			}
 			
 			//if revealed tile is 0, recursively reveal all surrounding tiles, if tile is not already revealed to 0 and is in bounds
 			//since 0 cannot be next to a mine, this will never lead to accidentally losing
 			if(displayBoard.getTileValue(column, row) == '0') {
-				
+			
 				if(column != Board.getSize()-1 && displayBoard.getTileValue(column+1,row) != '0') {
 					reveal(column+1, row);
 				}
@@ -463,6 +500,9 @@ public class Minesweeper implements MouseListener, ActionListener{
 			//give game win message
 			JLabel label = new JLabel("You win, Yay");
 			top.add(label);
+			
+			//play winSound
+			winSound.start();
 			
 			//prompt to play again
 			playAgain();
