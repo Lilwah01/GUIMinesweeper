@@ -198,7 +198,10 @@ public class Minesweeper implements MouseListener, ActionListener{
 			//loop through all buttons
 			for(int i=0; i<size; i++) {
 				for(int j=0; j<size; j++) {
-					
+					//check for double click
+					if(e.getSource()==buttons[i][j] && e.getClickCount()==2){
+						quickReveal(i,j);
+					} else
 					//check if e source is button in loop and if a left click
 					if(e.getSource()==buttons[i][j] && SwingUtilities.isLeftMouseButton(e) && displayBoard.getTileValue(i, j) == '?') {
 						
@@ -485,6 +488,76 @@ public class Minesweeper implements MouseListener, ActionListener{
 		top.add(startOver);
 		top.add(endGame);
 	}
+	
+	//adds a quick reveal, for when player double clicks
+	public void quickReveal(int column, int row) {
+		//set values
+		int tileValue = displayBoard.getTileValue(column, row);
+		int surroundFlags = 0;
+		
+		if(tileValue == 'F' || tileValue == '?') {
+			//do nothing
+		} else {
+			//set ascii char value to int value
+			tileValue-=48;
+			
+			//check all surrounding tiles for flags
+			if(column != Board.getSize()-1 && displayBoard.getTileValue(column+1,row) != 'F') {
+				surroundFlags++;
+			}
+			if(column != 0 && displayBoard.getTileValue(column-1,row) != 'F') {
+				surroundFlags++;;
+			}
+			if(row != Board.getSize()-1 && displayBoard.getTileValue(column,row+1) != 'F') {
+				surroundFlags++;;
+			}
+			if(row != 0 && displayBoard.getTileValue(column,row-1) != 'F') {
+				surroundFlags++;;
+			}
+			if(column != Board.getSize()-1 && row != 0 && displayBoard.getTileValue(column+1,row-1) != 'F') {
+				surroundFlags++;;
+			}
+			if(column != Board.getSize()-1 && row != Board.getSize()-1 && displayBoard.getTileValue(column+1,row+1) != 'F') {
+				surroundFlags++;;
+			}
+			if(column != 0 && row != Board.getSize()-1 && displayBoard.getTileValue(column-1,row+1) != 'F') {
+				surroundFlags++;;
+			}
+			if(column !=0 && row !=0 && displayBoard.getTileValue(column-1,row-1) != 'F') {
+				surroundFlags++;;
+			}
+			
+			//once surrounding tiles have been checked, determine if threshold has been met
+			if(surroundFlags>=tileValue) {
+				//reveal all surrounding tiles
+				if(column != Board.getSize()-1 && displayBoard.getTileValue(column+1,row) != '0') {
+					reveal(column+1, row);
+				}
+				if(column != 0 && displayBoard.getTileValue(column-1,row) != '0') {
+					reveal(column-1, row);
+				}
+				if(row != Board.getSize()-1 && displayBoard.getTileValue(column,row+1) != '0') {
+					reveal(column, row+1);
+				}
+				if(row != 0 && displayBoard.getTileValue(column,row-1) != '0') {
+					reveal(column, row-1);
+				}
+				if(column != Board.getSize()-1 && row != 0 && displayBoard.getTileValue(column+1,row-1) != '0') {
+					reveal(column+1, row-1);
+				}
+				if(column != Board.getSize()-1 && row != Board.getSize()-1 && displayBoard.getTileValue(column+1,row+1) != '0') {
+					reveal(column+1, row+1);
+				}
+				if(column != 0 && row != Board.getSize()-1 && displayBoard.getTileValue(column-1,row+1) != '0') {
+					reveal(column-1, row+1);
+				}
+				if(column !=0 && row !=0 && displayBoard.getTileValue(column-1,row-1) != '0') {
+					reveal(column-1, row-1);
+				}
+			}
+		}
+	}
+	
 	
 	//Don't use
 	@Override
