@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.sound.sampled.*;
-import java.io.File;
+import java.net.URL;
 import java.io.IOException;
 
 import java.util.Scanner;
@@ -63,17 +63,17 @@ public class Minesweeper implements MouseListener, ActionListener{
 
 	Minesweeper() throws IOException, UnsupportedAudioFileException, LineUnavailableException{
 		//load sounds
-		File gameWinFile = new File("win.wav");
+		URL gameWinFile = this.getClass().getResource("win.wav");
 		AudioInputStream winStream = AudioSystem.getAudioInputStream(gameWinFile);
 		winSound = AudioSystem.getClip();
 		winSound.open(winStream);
 		
-		File gameLoseFile = new File("lose.wav");
+		URL gameLoseFile = this.getClass().getResource("lose.wav");
 		AudioInputStream loseStream = AudioSystem.getAudioInputStream(gameLoseFile);
 		loseSound = AudioSystem.getClip();
 		loseSound.open(loseStream);
 		
-		File revealFile = new File("tick.wav");
+		URL revealFile = this.getClass().getResource("tick.wav");
 		AudioInputStream revealStream = AudioSystem.getAudioInputStream(revealFile);
 		revealSound = AudioSystem.getClip();
 		revealSound.open(revealStream);
